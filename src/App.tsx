@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
 import './App.css';
+import { Switch, Route } from 'react-router';
+import { Homepage } from './pages/home';
+import { allRoute } from './data/route';
+import { Navbar } from './component/navbar';
+import { Error } from './pages/error';
 
 function App() {
+  const [dimensions, setDimensions] = React.useState({
+    top: window.pageYOffset
+  });
+  const handleResize = () => {
+    setDimensions({
+      top: window.pageYOffset
+    });
+  }
+  useEffect(() => {
+    window.addEventListener("scroll", handleResize, false);
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar top={dimensions.top} />
+      <Switch>
+        <Route exact path="/" component={Homepage} /> 
+        {
+          allRoute.map((item,index)=> (
+            <Route exact path={item.path} component={item.component} /> 
+          ))
+        }
+        <Route component={Error} /> 
+      </Switch>
     </div>
   );
 }
